@@ -1,0 +1,20 @@
+# Environment variables and secrets
+.env
+.env.*
+
+# Python virtual environment and cache
+venv/
+__pycache__/
+*.py[cod]
+
+# Generated vector database and data
+data/chroma_db/
+data/raw_pdfs2/
+data/cleaned_text_clr/
+data/extracted_text_clr/
+data/
+node_modules/
+.env
+__pycache__/
+venv/
+*.log

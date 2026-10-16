@@ -1,0 +1,690 @@
+{
+  "_meta": {
+    "version": "1.0",
+    "description": "QanoonAI evaluation set — 30 Pakistani labour law questions with ground-truth answers and citations",
+    "how_to_use": "Run eval_runner.py against /ask endpoint. Compare model answer to expected_answer using LLM-as-judge or keyword matching. Check citations against expected_citations.",
+    "difficulty_distribution": {
+      "easy": 10,
+      "medium": 12,
+      "hard": 8
+    },
+    "category_distribution": {
+      "termination_and_notice": 6,
+      "wages_and_overtime": 6,
+      "leave_and_holidays": 5,
+      "maternity_and_women": 4,
+      "workplace_safety": 3,
+      "social_security_and_eobi": 3,
+      "child_and_bonded_labour": 3
+    },
+    "grading_notes": {
+      "citation_match": "law_name must match (fuzzy OK), section_number must match exactly",
+      "answer_match": "Use key_facts — every item in key_facts must appear in the model answer",
+      "acceptable_miss": "If a question maps to multiple provincial laws, matching ANY ONE is a pass for citation"
+    }
+  },
+
+  "questions": [
+
+    {
+      "id": "Q01",
+      "difficulty": "easy",
+      "category": "termination_and_notice",
+      "question": "How much notice must my employer give me before terminating my permanent job?",
+      "expected_answer": "For permanent employees, the employer must give one month's written notice before termination. Alternatively, the employer can pay one month's wages in lieu of notice instead of serving the notice period. This applies under several provincial shops and establishments acts.",
+      "key_facts": [
+        "one month notice",
+        "written notice",
+        "pay in lieu of notice",
+        "permanent employee"
+      ],
+      "expected_citations": [
+        {
+          "law_name_contains": "West Pakistan Shops and Establishments",
+          "section_number": "19"
+        },
+        {
+          "law_name_contains": "Sindh Shops",
+          "section_number": "19"
+        }
+      ],
+      "must_not_say": ["three months", "two months", "six months"],
+      "notes": "Multiple provincial laws have this provision. Any one citation is sufficient."
+    },
+
+    {
+      "id": "Q02",
+      "difficulty": "easy",
+      "category": "termination_and_notice",
+      "question": "Can I be fired without any notice if I am a temporary worker?",
+      "expected_answer": "Yes — temporary employees (whether monthly, weekly, or daily rated) are not entitled to any notice or pay in lieu of notice if their services are terminated. However, their services cannot be terminated as punishment without being given an opportunity to explain the charges against them.",
+      "key_facts": [
+        "temporary employee not entitled to notice",
+        "no pay in lieu",
+        "opportunity to explain charges",
+        "cannot be terminated as punishment without hearing"
+      ],
+      "expected_citations": [
+        {
+          "law_name_contains": "Balochistan Shops and Establishments",
+          "section_number": "N/A"
+        },
+        {
+          "law_name_contains": "West Pakistan Shops and Establishments",
+          "section_number": "19"
+        }
+      ],
+      "must_not_say": ["entitled to one month notice"],
+      "notes": "This was confirmed working in live test. Check that the LLM does NOT incorrectly cite permanent-employee provisions for the main answer."
+    },
+
+    {
+      "id": "Q03",
+      "difficulty": "medium",
+      "category": "termination_and_notice",
+      "question": "My employer dismissed me without following any disciplinary process. What are my rights?",
+      "expected_answer": "An employee cannot be dismissed as a punishment without first being given a chance to explain the charges levelled against them. This is a due process requirement under Pakistani labour law. If your employer skipped this step, the dismissal may be challengeable before the Labour Court.",
+      "key_facts": [
+        "opportunity to explain charges",
+        "due process required before dismissal as punishment",
+        "Labour Court"
+      ],
+      "expected_citations": [
+        {
+          "law_name_contains": "Shops and Establishments",
+          "section_number": "19"
+        }
+      ],
+      "must_not_say": [],
+      "notes": "Tests whether model connects termination procedure to redress mechanism."
+    },
+
+    {
+      "id": "Q04",
+      "difficulty": "easy",
+      "category": "termination_and_notice",
+      "question": "What is the minimum notice period required when an employee resigns?",
+      "expected_answer": "When a permanent employee resigns, they must give one month's written notice to the employer, just as the employer must give the employee one month's notice for termination. The employee can also pay one month's wages in lieu of serving the notice period.",
+      "key_facts": [
+        "one month notice",
+        "applies to employee resignation too",
+        "pay in lieu option"
+      ],
+      "expected_citations": [
+        {
+          "law_name_contains": "Shops and Establishments",
+          "section_number": "19"
+        }
+      ],
+      "must_not_say": ["no notice required"],
+      "notes": "Tests bidirectional nature of the notice requirement."
+    },
+
+    {
+      "id": "Q05",
+      "difficulty": "medium",
+      "category": "termination_and_notice",
+      "question": "Can an employer stop all work and send employees home during a machine breakdown without notice or pay?",
+      "expected_answer": "Yes. Under the Sindh Terms of Employment Act, an employer may stop any section of an establishment wholly or partially without notice in the event of a breakdown of machinery, stoppage of power supply, fire, epidemic, civil commotion, or other cause beyond the employer's control.",
+      "key_facts": [
+        "stoppage without notice allowed",
+        "machine breakdown",
+        "power stoppage",
+        "cause beyond employer's control",
+        "fire or civil commotion"
+      ],
+      "expected_citations": [
+        {
+          "law_name_contains": "Sindh Terms of Employment",
+          "section_number": "14"
+        }
+      ],
+      "must_not_say": [],
+      "notes": "Tests a less obvious provision. Answer should be honest that stoppage without notice is legally permitted."
+    },
+
+    {
+      "id": "Q06",
+      "difficulty": "hard",
+      "category": "termination_and_notice",
+      "question": "I was on probation for 3 months and then dismissed. Am I entitled to notice pay?",
+      "expected_answer": "Probationary employees typically fall between permanent and temporary categories. Most provincial laws require employers to confirm, extend, or terminate employment at the end of probation. Whether notice pay applies depends on whether you were classified as permanent by the end of probation. If the employer terminated you before confirmation of permanent status, you may not be entitled to notice pay — but termination without a hearing on charges is still unlawful.",
+      "key_facts": [
+        "probation period",
+        "confirmation or termination at end of probation",
+        "hearing still required even for probationers"
+      ],
+      "expected_citations": [
+        {
+          "law_name_contains": "Shops and Establishments",
+          "section_number": "19"
+        }
+      ],
+      "must_not_say": [],
+      "notes": "Hard: requires model to reason under ambiguity. Accept nuanced answer."
+    },
+
+    {
+      "id": "Q07",
+      "difficulty": "easy",
+      "category": "wages_and_overtime",
+      "question": "How many hours a day can my employer make me work before overtime applies?",
+      "expected_answer": "Under Pakistani labour law (Factories Act), a worker cannot be required to work more than 9 hours in a day or 48 hours in a week without overtime pay. Any work beyond these limits is overtime and must be compensated at twice the ordinary rate of wages.",
+      "key_facts": [
+        "9 hours per day",
+        "48 hours per week",
+        "overtime at double rate"
+      ],
+      "expected_citations": [
+        {
+          "law_name_contains": "Factories Act",
+          "section_number": "34"
+        }
+      ],
+      "must_not_say": ["10 hours", "8 hours per day is the maximum"],
+      "notes": "Classic easy question. Section 34 of Factories Act 1934 covers overtime hours."
+    },
+
+    {
+      "id": "Q08",
+      "difficulty": "easy",
+      "category": "wages_and_overtime",
+      "question": "What is the overtime pay rate in Pakistan?",
+      "expected_answer": "Workers who work beyond the normal working hours are entitled to overtime pay at double their ordinary rate of wages — i.e., twice the regular hourly rate for each hour of overtime worked.",
+      "key_facts": [
+        "double rate",
+        "twice the ordinary rate",
+        "overtime pay"
+      ],
+      "expected_citations": [
+        {
+          "law_name_contains": "Factories Act",
+          "section_number": "34"
+        }
+      ],
+      "must_not_say": ["one and a half times", "1.5x"],
+      "notes": "Pakistan uses 2x (double), not the 1.5x common in other jurisdictions. Critical distinction."
+    },
+
+    {
+      "id": "Q09",
+      "difficulty": "medium",
+      "category": "wages_and_overtime",
+      "question": "My employer has not paid my wages for two months. What law protects me?",
+      "expected_answer": "The Payment of Wages Act 1936 (and its provincial equivalents) protects workers from wage delays. Wages must be paid by the 7th day of the following month for establishments with fewer than 1,000 workers, and by the 10th day for larger establishments. Unlawful deductions and delays are prohibited, and you can file a claim with the Payment of Wages Authority.",
+      "key_facts": [
+        "Payment of Wages Act",
+        "7th day of following month",
+        "10th day for large establishments",
+        "Payment of Wages Authority"
+      ],
+      "expected_citations": [
+        {
+          "law_name_contains": "Payment of Wages",
+          "section_number": "5"
+        }
+      ],
+      "must_not_say": [],
+      "notes": "Tests knowledge of wage payment deadlines and enforcement mechanism."
+    },
+
+    {
+      "id": "Q10",
+      "difficulty": "medium",
+      "category": "wages_and_overtime",
+      "question": "Can my employer deduct money from my wages for breakages or losses at work?",
+      "expected_answer": "Deductions from wages are strictly regulated. An employer may only make deductions permitted under the Payment of Wages Act — such as fines (within limits), absence from duty, house accommodation provided by the employer, or advances. Arbitrary deductions for breakages are not permitted unless they fall within allowed categories and the prescribed procedure is followed.",
+      "key_facts": [
+        "deductions must be authorised by law",
+        "fines are limited",
+        "arbitrary deductions not allowed",
+        "Payment of Wages Act"
+      ],
+      "expected_citations": [
+        {
+          "law_name_contains": "Payment of Wages",
+          "section_number": "7"
+        }
+      ],
+      "must_not_say": ["employer can deduct anything"],
+      "notes": "Section 7 of Payment of Wages Act lists the only permitted deductions."
+    },
+
+    {
+      "id": "Q11",
+      "difficulty": "hard",
+      "category": "wages_and_overtime",
+      "question": "Does the bonus I receive count as part of my wages for overtime calculation?",
+      "expected_answer": "Under the Sindh Terms of Employment Act, bonus as defined in the Payment of Wages Act is explicitly excluded from the definition of wages used for calculating notice pay and certain statutory calculations. However, for overtime rate calculations under the Factories Act, the base rate of wages is used. Whether a specific bonus is included depends on how it is classified — a production bonus tied to output may be included, while a festival bonus typically is not.",
+      "key_facts": [
+        "bonus excluded from wages in some calculations",
+        "Payment of Wages Act definition",
+        "overtime based on ordinary rate"
+      ],
+      "expected_citations": [
+        {
+          "law_name_contains": "Sindh Terms of Employment",
+          "section_number": "13"
+        },
+        {
+          "law_name_contains": "Payment of Wages",
+          "section_number": "2"
+        }
+      ],
+      "must_not_say": [],
+      "notes": "Hard: requires cross-referencing two acts. Accept partial answer acknowledging complexity."
+    },
+
+    {
+      "id": "Q12",
+      "difficulty": "medium",
+      "category": "wages_and_overtime",
+      "question": "Am I entitled to a rest day every week and is it paid?",
+      "expected_answer": "Yes. Under the Factories Act, every worker is entitled to one weekly rest day (typically Sunday or a fixed day). This rest day must be a paid day — workers cannot be compelled to work on it without receiving overtime pay for that day in addition to their weekly wages.",
+      "key_facts": [
+        "one day weekly rest",
+        "paid rest day",
+        "cannot be compelled to work without overtime compensation"
+      ],
+      "expected_citations": [
+        {
+          "law_name_contains": "Factories Act",
+          "section_number": "35"
+        }
+      ],
+      "must_not_say": ["unpaid", "no rest day entitlement"],
+      "notes": "Section 35 of Factories Act 1934 covers weekly holiday."
+    },
+
+    {
+      "id": "Q13",
+      "difficulty": "easy",
+      "category": "leave_and_holidays",
+      "question": "How many days of annual leave am I entitled to after one year of work?",
+      "expected_answer": "Under the Factories Act, a worker who has completed one year of continuous service is entitled to 14 days of paid annual leave. For workers under 15 years of age, the entitlement is higher at 1 day for every 15 days of work.",
+      "key_facts": [
+        "14 days annual leave",
+        "after one year of service",
+        "paid leave"
+      ],
+      "expected_citations": [
+        {
+          "law_name_contains": "Factories Act",
+          "section_number": "49"
+        }
+      ],
+      "must_not_say": ["7 days", "10 days", "21 days"],
+      "notes": "Section 49 of Factories Act. 14 days is the standard entitlement."
+    },
+
+    {
+      "id": "Q14",
+      "difficulty": "medium",
+      "category": "leave_and_holidays",
+      "question": "Can my employer refuse to let me take my annual leave?",
+      "expected_answer": "Annual leave cannot be arbitrarily refused. However, an employer may require an employee to take leave at a time convenient to the business. If leave accumulates and the employer has not allowed it to be taken, the worker is typically entitled to leave encashment — payment for unused leave days. The employer cannot simply deny leave and then not pay for it.",
+      "key_facts": [
+        "employer can schedule leave timing",
+        "cannot deny and refuse to pay",
+        "leave encashment for unused leave"
+      ],
+      "expected_citations": [
+        {
+          "law_name_contains": "Factories Act",
+          "section_number": "49"
+        }
+      ],
+      "must_not_say": ["employer can cancel all leave"],
+      "notes": "Tests nuance: employer has scheduling rights but not a right to simply deny."
+    },
+
+    {
+      "id": "Q15",
+      "difficulty": "easy",
+      "category": "leave_and_holidays",
+      "question": "How many casual leave days am I entitled to per year?",
+      "expected_answer": "Workers are entitled to 10 days of casual leave per year under Pakistani labour law. Casual leave is typically for unexpected personal needs and is paid leave.",
+      "key_facts": [
+        "10 days casual leave",
+        "per year",
+        "paid"
+      ],
+      "expected_citations": [
+        {
+          "law_name_contains": "Factories Act",
+          "section_number": "49"
+        }
+      ],
+      "must_not_say": ["7 days", "14 days casual leave"],
+      "notes": "10 casual leave days is the standard under Factories Act."
+    },
+
+    {
+      "id": "Q16",
+      "difficulty": "medium",
+      "category": "leave_and_holidays",
+      "question": "My employer did not pay me for a public holiday I did not work on. Is this legal?",
+      "expected_answer": "Public holidays must be paid days off for workers. If a worker is not required to work on a public holiday, they are still entitled to full wages for that day. Requiring a worker to work on a public holiday without additional compensation is unlawful — such workers must receive their normal pay plus overtime or a compensatory day off.",
+      "key_facts": [
+        "public holidays are paid",
+        "wages still due on public holiday not worked",
+        "extra pay or compensatory leave if worked on holiday"
+      ],
+      "expected_citations": [
+        {
+          "law_name_contains": "Factories Act",
+          "section_number": "35"
+        }
+      ],
+      "must_not_say": ["public holidays are unpaid"],
+      "notes": "Tests understanding of paid holidays vs. rest days."
+    },
+
+    {
+      "id": "Q17",
+      "difficulty": "hard",
+      "category": "leave_and_holidays",
+      "question": "I joined in March. Can I take my full 14 days annual leave in December of the same year?",
+      "expected_answer": "No. Annual leave under the Factories Act is earned after completing 12 months of continuous service. If you joined in March, you would become eligible for your 14 days of annual leave in March of the following year, not in December of the same year. You may be entitled to pro-rated leave in some provincial frameworks, but the base Factories Act requires completion of a full year first.",
+      "key_facts": [
+        "12 months continuous service required first",
+        "leave earned after one full year",
+        "not available within first year"
+      ],
+      "expected_citations": [
+        {
+          "law_name_contains": "Factories Act",
+          "section_number": "49"
+        }
+      ],
+      "must_not_say": ["yes you can take leave immediately"],
+      "notes": "Hard: requires applying the one-year qualifying period to a concrete scenario."
+    },
+
+    {
+      "id": "Q18",
+      "difficulty": "easy",
+      "category": "maternity_and_women",
+      "question": "How many weeks of maternity leave is a woman entitled to in Pakistan?",
+      "expected_answer": "Under the Maternity Benefit Ordinance 1958 and provincial maternity acts, a woman is entitled to 12 weeks (approximately 3 months) of maternity leave — 6 weeks before delivery and 6 weeks after. During this period, she is entitled to full wages.",
+      "key_facts": [
+        "12 weeks maternity leave",
+        "6 weeks before delivery",
+        "6 weeks after delivery",
+        "full wages during leave"
+      ],
+      "expected_citations": [
+        {
+          "law_name_contains": "Maternity",
+          "section_number": "4"
+        }
+      ],
+      "must_not_say": ["8 weeks", "4 weeks", "unpaid"],
+      "notes": "Core maternity benefit. Some provincial laws give more (e.g. KPK gives 16 weeks)."
+    },
+
+    {
+      "id": "Q19",
+      "difficulty": "medium",
+      "category": "maternity_and_women",
+      "question": "Can my employer fire me or give me notice while I am on maternity leave?",
+      "expected_answer": "No. Under the Khyber Pakhtunkhwa Maternity Benefits Act 2013 and similar provincial laws, it is unlawful for an employer to give a woman notice of dismissal while she is absent on maternity leave, or to give notice on a day when it would expire during her maternity absence. Dismissal during maternity leave is prohibited.",
+      "key_facts": [
+        "cannot give notice during maternity absence",
+        "notice expiring during leave is also invalid",
+        "dismissal during maternity leave prohibited"
+      ],
+      "expected_citations": [
+        {
+          "law_name_contains": "Maternity",
+          "section_number": "7"
+        }
+      ],
+      "must_not_say": ["employer can dismiss during maternity leave"],
+      "notes": "Directly grounded in Section 7 of KPK Maternity Act — confirmed in live test response."
+    },
+
+    {
+      "id": "Q20",
+      "difficulty": "medium",
+      "category": "maternity_and_women",
+      "question": "What happens to my maternity benefit if I change jobs while pregnant?",
+      "expected_answer": "Maternity benefit is tied to the period of employment before delivery. Under provincial maternity acts, a woman must typically have worked for an employer for a qualifying period (often 4 months) before becoming eligible for maternity benefit from that employer. If you change jobs, your benefit entitlement restarts with the new employer and you may not qualify if the qualifying period is not met before delivery.",
+      "key_facts": [
+        "qualifying period required",
+        "benefit linked to current employer",
+        "changing jobs resets eligibility"
+      ],
+      "expected_citations": [
+        {
+          "law_name_contains": "Maternity",
+          "section_number": "5"
+        }
+      ],
+      "must_not_say": [],
+      "notes": "Tests eligibility conditions for maternity benefit."
+    },
+
+    {
+      "id": "Q21",
+      "difficulty": "hard",
+      "category": "maternity_and_women",
+      "question": "My employer is paying me only half my salary during maternity leave. Is that legal?",
+      "expected_answer": "No — this is unlawful. Maternity benefit is payable at the full rate of wages the woman was receiving before her leave began. Paying half salary during maternity leave is a violation of the Maternity Benefits Ordinance 1958 and equivalent provincial laws. The woman can file a complaint with the Labour Department or Labour Court to recover the unpaid amount.",
+      "key_facts": [
+        "full wages required during maternity leave",
+        "half pay is unlawful",
+        "complaint to Labour Department or Labour Court"
+      ],
+      "expected_citations": [
+        {
+          "law_name_contains": "Maternity",
+          "section_number": "4"
+        }
+      ],
+      "must_not_say": ["half pay is acceptable", "employer can choose the rate"],
+      "notes": "Hard: requires confirming the rate is full, not reduced, and naming the remedy."
+    },
+
+    {
+      "id": "Q22",
+      "difficulty": "easy",
+      "category": "workplace_safety",
+      "question": "Is my employer required by law to provide a safe working environment?",
+      "expected_answer": "Yes. Under the Factories Act 1934, every factory must be kept clean, free from overcrowding, properly ventilated, and maintained at a reasonable temperature. Dangerous machinery must be securely fenced. The employer has a statutory duty to ensure the health, safety, and welfare of workers.",
+      "key_facts": [
+        "clean factory required",
+        "dangerous machinery must be fenced",
+        "ventilation and temperature requirements",
+        "statutory duty of employer"
+      ],
+      "expected_citations": [
+        {
+          "law_name_contains": "Factories Act",
+          "section_number": "13"
+        }
+      ],
+      "must_not_say": ["no legal obligation"],
+      "notes": "Covers Part III (Health) of Factories Act 1934."
+    },
+
+    {
+      "id": "Q23",
+      "difficulty": "medium",
+      "category": "workplace_safety",
+      "question": "I was injured at work. What compensation am I entitled to?",
+      "expected_answer": "Under the Workmen's Compensation Act 1923, a worker who suffers personal injury caused by an accident arising out of and in the course of employment is entitled to compensation from the employer. The amount depends on the nature of the injury — permanent total disablement, permanent partial disablement, temporary disablement, or death. The employer is liable even if no negligence is proven; it is a strict liability scheme.",
+      "key_facts": [
+        "Workmen's Compensation Act 1923",
+        "injury arising out of employment",
+        "compensation based on type of injury",
+        "strict liability — no negligence needed"
+      ],
+      "expected_citations": [
+        {
+          "law_name_contains": "Workmen's Compensation",
+          "section_number": "3"
+        }
+      ],
+      "must_not_say": ["no compensation available", "must prove employer negligence"],
+      "notes": "Tests knowledge of the strict liability basis of workers comp."
+    },
+
+    {
+      "id": "Q24",
+      "difficulty": "hard",
+      "category": "workplace_safety",
+      "question": "My factory has no first aid box. Is that a violation of law?",
+      "expected_answer": "Yes. The Factories Act 1934 requires every factory to maintain at least one first aid box or cupboard equipped with prescribed contents for every 150 workers. The box must be kept in the charge of a responsible person who is trained in first aid. Failure to provide first aid facilities is a violation and the factory inspector can take action against the employer.",
+      "key_facts": [
+        "first aid box required",
+        "one box per 150 workers",
+        "responsible trained person required",
+        "Factories Act"
+      ],
+      "expected_citations": [
+        {
+          "law_name_contains": "Factories Act",
+          "section_number": "45"
+        }
+      ],
+      "must_not_say": ["no requirement for first aid"],
+      "notes": "Section 45 of Factories Act. Tests specific welfare provisions."
+    },
+
+    {
+      "id": "Q25",
+      "difficulty": "easy",
+      "category": "social_security_and_eobi",
+      "question": "What is EOBI and am I entitled to a pension from it?",
+      "expected_answer": "EOBI stands for Employees Old-Age Benefits Institution. Under the Employees Old-Age Benefits Act 1976, workers in covered industries are entitled to an old-age pension upon reaching the age of 60 (55 for women) and completing at least 15 years of insured employment. Both employers and employees contribute to EOBI — employers contribute 5% of minimum wages and employees contribute 1%.",
+      "key_facts": [
+        "Employees Old-Age Benefits Institution",
+        "pension at age 60 (55 for women)",
+        "15 years insured employment required",
+        "employer contributes 5%, employee 1%"
+      ],
+      "expected_citations": [
+        {
+          "law_name_contains": "Employees Old-Age Benefits",
+          "section_number": "22"
+        }
+      ],
+      "must_not_say": ["no pension available"],
+      "notes": "Core EOBI question. Contribution rates and age thresholds are fixed statutory figures."
+    },
+
+    {
+      "id": "Q26",
+      "difficulty": "medium",
+      "category": "social_security_and_eobi",
+      "question": "My employer never registered me with EOBI. What can I do?",
+      "expected_answer": "Registration with EOBI is a mandatory obligation for covered employers — they cannot opt out or fail to register eligible workers. If your employer has not registered you, you can file a complaint directly with the EOBI office. EOBI can assess and recover contributions from the employer. Your entitlement to pension begins from when contributions should have been made, not from when you discover the problem.",
+      "key_facts": [
+        "registration is mandatory",
+        "complaint to EOBI office",
+        "EOBI can recover contributions from employer",
+        "entitlement backdated"
+      ],
+      "expected_citations": [
+        {
+          "law_name_contains": "Employees Old-Age Benefits",
+          "section_number": "9"
+        }
+      ],
+      "must_not_say": ["nothing you can do"],
+      "notes": "Tests enforcement mechanism and worker remedy."
+    },
+
+    {
+      "id": "Q27",
+      "difficulty": "hard",
+      "category": "social_security_and_eobi",
+      "question": "I worked for 10 years and then resigned. Am I entitled to any EOBI pension?",
+      "expected_answer": "Not yet — the EOBI old-age pension requires a minimum of 15 years of insured employment. With only 10 years of contributions, you do not qualify for the old-age pension on resignation. However, if you continue to work elsewhere in a covered establishment, your previous EOBI contributions remain credited and count toward the 15-year threshold. You may also be entitled to a reduced invalidity pension if you become permanently incapacitated regardless of years contributed.",
+      "key_facts": [
+        "15 years required for old-age pension",
+        "10 years insufficient for pension",
+        "contributions remain credited if you work elsewhere",
+        "invalidity pension available regardless"
+      ],
+      "expected_citations": [
+        {
+          "law_name_contains": "Employees Old-Age Benefits",
+          "section_number": "22"
+        }
+      ],
+      "must_not_say": ["you get a pension after 10 years"],
+      "notes": "Hard: requires knowing the 15-year threshold and the portability of contributions."
+    },
+
+    {
+      "id": "Q28",
+      "difficulty": "easy",
+      "category": "child_and_bonded_labour",
+      "question": "What is the minimum age for a child to work in a factory in Pakistan?",
+      "expected_answer": "Under the Employment of Children Act 1991, no child below the age of 14 years may be employed in any factory, mine, or hazardous occupation. Children between 14 and 18 may work in non-hazardous establishments but with restrictions on hours and types of work.",
+      "key_facts": [
+        "minimum age 14",
+        "Employment of Children Act 1991",
+        "no child under 14 in factory",
+        "hazardous occupations fully prohibited"
+      ],
+      "expected_citations": [
+        {
+          "law_name_contains": "Employment of Children",
+          "section_number": "3"
+        }
+      ],
+      "must_not_say": ["12 years", "10 years", "no restriction"],
+      "notes": "Fundamental child labour question. Age 14 is the hard cutoff."
+    },
+
+    {
+      "id": "Q29",
+      "difficulty": "medium",
+      "category": "child_and_bonded_labour",
+      "question": "My employer is making me work to pay off a debt to him. Is this legal?",
+      "expected_answer": "No — this is bonded labour and is illegal in Pakistan. The Bonded Labour System (Abolition) Act 1992 abolishes the bonded labour system entirely. Any advance, loan, or debt that compels a worker to work for a specific employer under unfree conditions is null and void. Both the employer who imposes bonded labour and anyone who helps enforce it commit a criminal offence punishable with imprisonment.",
+      "key_facts": [
+        "bonded labour is illegal",
+        "Bonded Labour System (Abolition) Act 1992",
+        "advance or debt-based compulsion is void",
+        "criminal offence",
+        "imprisonment for perpetrators"
+      ],
+      "expected_citations": [
+        {
+          "law_name_contains": "Bonded Labour",
+          "section_number": "4"
+        }
+      ],
+      "must_not_say": ["debt bondage is legal", "employer can make you work off a loan"],
+      "notes": "Tests one of the most important worker protection laws."
+    },
+
+    {
+      "id": "Q30",
+      "difficulty": "hard",
+      "category": "child_and_bonded_labour",
+      "question": "Can a child under 14 help in a family business at home, or does the child labour law still apply?",
+      "expected_answer": "The Employment of Children Act 1991 prohibits employment of children under 14 in listed hazardous occupations and factories. However, the Act contains an exception for work done in a family home as part of a family enterprise — provided the work is not hazardous and the child is not employed by a third party. This exception is narrow: if the 'family business' is actually commercial production for a contractor or employer, it falls outside the exception and the prohibition applies.",
+      "key_facts": [
+        "family home exception exists",
+        "exception is narrow",
+        "must not be hazardous",
+        "must be genuine family enterprise, not third-party employer",
+        "commercial production for contractor not covered by exception"
+      ],
+      "expected_citations": [
+        {
+          "law_name_contains": "Employment of Children",
+          "section_number": "3"
+        }
+      ],
+      "must_not_say": ["family exception is unlimited", "all family work is always legal"],
+      "notes": "Hard: tests understanding of the scope and limits of the family enterprise exception."
+    }
+
+  ]
+}
