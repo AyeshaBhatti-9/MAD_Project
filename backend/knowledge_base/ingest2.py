@@ -8,7 +8,7 @@ import re
 import chromadb
 from sentence_transformers import SentenceTransformer
 from utils.cleaner2 import extract_law_name2
-from chunker2 import chunk_by_section2, law_name_from_clr_filename
+from Backend.backend.knowledge_base.chunker2 import chunk_by_section2, law_name_from_clr_filename
 
 # ── Config ────────────────────────────────────────────────────────────────────
 CLR_TEXT_FOLDER = "../data/cleaned_text_clr"   # post_clean.py output

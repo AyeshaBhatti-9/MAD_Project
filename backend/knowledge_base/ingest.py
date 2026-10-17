@@ -2,7 +2,7 @@ import os
 import json
 import chromadb
 from sentence_transformers import SentenceTransformer
-from chunker import extract_law_name, chunk_by_section, law_name_from_pdf_filename
+from Backend.backend.knowledge_base.chunker import extract_law_name, chunk_by_section, law_name_from_pdf_filename
 
 # ── Config ────────────────────────────────────────────────────────────────────
 PDF_TEXT_FOLDER  = "data/extracted_text"
