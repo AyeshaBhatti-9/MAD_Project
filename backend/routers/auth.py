@@ -1,15 +1,18 @@
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, HTTPException, Request
 from sqlalchemy.orm import Session
 from ..database import get_db
 from ..deps import get_current_user
 from ..models import User
 from ..schemas import SignupRequest, LoginRequest, TokenResponse, UserOut
 from ..security import hash_password, verify_password, create_token
+from ..config import LOGIN_RATE_LIMIT, SIGNUP_RATE_LIMIT
+from ..limiter import limiter
 
 router = APIRouter(prefix="/auth", tags=["auth"])
 
 @router.post("/signup", response_model=TokenResponse, status_code=201)
-def signup(req: SignupRequest, db: Session = Depends(get_db)):
+@limiter.limit(SIGNUP_RATE_LIMIT)
+def signup(request: Request, req: SignupRequest, db: Session = Depends(get_db)):
     email = req.email.lower()
     if db.query(User).filter(User.email == email).first():
         raise HTTPException(status_code=409, detail="Email already registered")
@@ -20,7 +23,8 @@ def signup(req: SignupRequest, db: Session = Depends(get_db)):
     return TokenResponse(access_token=create_token(user.id), user=user)
 
 @router.post("/login", response_model=TokenResponse)
-def login(req: LoginRequest, db: Session = Depends(get_db)):
+@limiter.limit(LOGIN_RATE_LIMIT)
+def login(request: Request, req: LoginRequest, db: Session = Depends(get_db)):
     user = db.query(User).filter(User.email == req.email.lower()).first()
     if not user or not verify_password(req.password, user.password_hash):
         raise HTTPException(status_code=401, detail="Incorrect email or password")

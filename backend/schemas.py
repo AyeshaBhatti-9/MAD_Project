@@ -32,6 +32,7 @@ class AskRequest(BaseModel):
     conversation_id: int | None = None
     session_document: str | None = None
     history: list[ChatTurn] | None = None   # guests only: last few turns kept in the app
+    document_id: int | None = None   # signed-in users: use a saved document
 
 class Citation(BaseModel):
     index: int
@@ -75,3 +76,20 @@ class ConversationDetail(BaseModel):
     title: str
     messages: list[MessageOut]
     model_config = {"from_attributes": True}
+
+class DocumentOut(BaseModel):
+    id: int
+    filename: str
+    char_count: int
+    created_at: datetime
+    model_config = {"from_attributes": True}
+
+class DocumentDetail(DocumentOut):
+    extracted_text: str
+
+class UploadResponse(BaseModel):
+    id: int | None            # None for guests (nothing is saved)
+    filename: str
+    extracted_text: str
+    char_count: int
+    saved: bool

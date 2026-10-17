@@ -1,14 +1,16 @@
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, HTTPException, Request
 from sqlalchemy.orm import Session
-from ..config import HISTORY_LIMIT
+from ..config import HISTORY_LIMIT, ASK_RATE_LIMIT
 from ..database import get_db
-from ..models import User, Conversation, Message, utcnow
+from ..models import User, Conversation, Message, utcnow, Document
 from ..services.intent import is_conversational
 from ..services.retrieval import retrieve, build_context
 from ..services.llm import ask_groq, parse_xai_block, why_relevant_map
 from ..services.xai import build_citations_and_xai
 from ..deps import get_current_user, get_optional_user
 from ..schemas import (AskRequest, AskResponse, ConversationOut, ConversationDetail)
+from ..limiter import limiter
+
 
 router = APIRouter(prefix="/chat", tags=["chat"])
 
@@ -41,7 +43,8 @@ def _answer(question: str, history: list[dict], session_document: str | None):
 
 
 @router.post("/ask", response_model=AskResponse)
-def ask(req: AskRequest, db: Session = Depends(get_db),
+@limiter.limit(ASK_RATE_LIMIT)
+def ask(request: Request, req: AskRequest, db: Session = Depends(get_db),
         user: User | None = Depends(get_optional_user)):
     question = req.question.strip()
     if not question:
@@ -64,7 +67,13 @@ def ask(req: AskRequest, db: Session = Depends(get_db),
 
     previous = convo.messages[-HISTORY_LIMIT:]
     history = [{"role": m.role, "content": m.content} for m in previous]
-    answer, citations, xai = _answer(question, history, req.session_document)
+    doc_text = req.session_document
+    if req.document_id:
+        doc = db.query(Document).filter_by(id=req.document_id, user_id=user.id).first()
+        if not doc:
+            raise HTTPException(status_code=404, detail="Document not found")
+        doc_text = doc.extracted_text
+    answer, citations, xai = _answer(question, history, doc_text)
 
     db.add(Message(conversation_id=convo.id, role="user", content=question))
     db.add(Message(

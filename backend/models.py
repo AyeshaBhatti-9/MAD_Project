@@ -37,3 +37,12 @@ class Message(Base):
     xai: Mapped[dict | None] = mapped_column(JSON, nullable=True)
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
     conversation = relationship("Conversation", back_populates="messages")
+
+class Document(Base):
+    __tablename__ = "documents"
+    id: Mapped[int] = mapped_column(primary_key=True)
+    user_id: Mapped[int] = mapped_column(ForeignKey("users.id"), index=True)
+    filename: Mapped[str] = mapped_column(String(255))
+    extracted_text: Mapped[str] = mapped_column(Text)
+    char_count: Mapped[int] = mapped_column(default=0)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)

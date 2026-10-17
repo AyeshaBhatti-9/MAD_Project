@@ -6,6 +6,7 @@ from ..config import (
     CHROMA_PATH, COLLECTION_NAME_1, COLLECTION_NAME_2,
     EMBED_MODEL, RERANK_MODEL,
     TOP_K_RETRIEVE, TOP_K_FINAL, SCORE_THRESHOLD, RERANK_NOISE_FLOOR,
+    MAX_DOC_CHARS,
 )
 
 # ── Init (runs once, when the module is first imported) ──────────────────────
@@ -102,7 +103,7 @@ def build_context(chunks: list[dict], session_doc: str | None) -> str:
     if session_doc:
         parts.append(
             "=== UPLOADED EMPLOYMENT DOCUMENT ===\n"
-            + session_doc[:3000]
+            + session_doc[:MAX_DOC_CHARS]
             + "\n=== END OF DOCUMENT ===\n"
         )
 

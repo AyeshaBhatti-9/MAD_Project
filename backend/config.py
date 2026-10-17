@@ -20,7 +20,8 @@ COLLECTION_NAME_1 = "qanoon_labour"
 COLLECTION_NAME_2 = "qanoon_labour_clr"
 EMBED_MODEL = "BAAI/bge-small-en-v1.5"
 RERANK_MODEL = "cross-encoder/ms-marco-MiniLM-L-6-v2"
-GROQ_MODEL = "llama-3.3-70b-versatile"
+GROQ_MODEL = "fake"
+#"openai/gpt-oss-120b"
 TOP_K_RETRIEVE = 12
 TOP_K_FINAL = 5
 SCORE_THRESHOLD = 0.70
@@ -31,3 +32,12 @@ RERANK_NOISE_FLOOR = -3.0
 
 # Chat
 HISTORY_LIMIT = 6   # previous messages sent to the LLM for follow-ups
+# Limits
+MAX_DOC_CHARS = 8000              # contract text sent to the LLM
+ASK_RATE_LIMIT = "10/minute"      # per IP
+UPLOAD_RATE_LIMIT = "5/minute"
+LOGIN_RATE_LIMIT = "10/minute"
+SIGNUP_RATE_LIMIT = "5/minute"
+
+# CORS: comma-separated list in .env, "*" while developing
+CORS_ORIGINS = [o.strip() for o in os.getenv("CORS_ORIGINS", "*").split(",")]
