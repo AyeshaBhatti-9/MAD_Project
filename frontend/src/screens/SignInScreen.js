@@ -27,11 +27,8 @@ export default function SignInScreen({ navigation }) {
 
     try {
       setLoading(true);
-      // const response = await api.post('/auth/login', { email, password });
-      // await login(response.data.access_token, response.data.user);
-      
-      // Temporary testing mock:
-      await login('dummy_mock_token_123', { id: 1, name: 'Test User', email });
+      const response = await api.post('/auth/login', { email: email.trim().toLowerCase(), password });
+      await login(response.data.access_token, response.data.user);
       navigation.replace('Home');
     } catch (error) {
       const msg = error.response?.data?.detail || 'Incorrect email or password';
@@ -132,7 +129,7 @@ export default function SignInScreen({ navigation }) {
         </View>
 
         <View style={styles.footerLinkRow}>
-          <Text style={styles.footerLinkMuted}>Don't have an account? </Text>
+          <Text style={styles.footerLinkMuted}>Don&apos;t have an account? </Text>
           <TouchableOpacity onPress={() => navigation.navigate('SignUp')}>
             <Text style={styles.footerLinkBold}>Create one</Text>
           </TouchableOpacity>
