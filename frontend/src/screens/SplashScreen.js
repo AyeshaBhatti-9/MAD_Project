@@ -2,6 +2,7 @@ import React, { useEffect, useContext, useRef } from 'react';
 import { View, Text, StyleSheet, Animated } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { AuthContext } from '../context/AuthContext';
+import { StatusBar } from 'expo-status-bar';
 
 export default function SplashScreen({ navigation }) {
   const { user, isLoading } = useContext(AuthContext);
@@ -35,7 +36,8 @@ export default function SplashScreen({ navigation }) {
   });
 
   return (
-    <SafeAreaView style={styles.container}>
+    <SafeAreaView style={styles.container} edges={['top', 'bottom', 'left', 'right']}>
+      <StatusBar style="light" />
       <View style={styles.content}>
         {/* Q Logo Box */}
         <View style={styles.logoBox}>

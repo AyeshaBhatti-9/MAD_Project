@@ -18,7 +18,9 @@ export const AuthProvider = ({ children }) => {
         setUser(null);
       }
     } catch (error) {
-      await SecureStore.deleteItemAsync('userToken');
+      if (error.response?.status === 401) {
+        await SecureStore.deleteItemAsync('userToken');
+      }
       setUser(null);
     } finally {
       setIsLoading(false);

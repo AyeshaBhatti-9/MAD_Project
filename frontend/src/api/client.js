@@ -1,8 +1,7 @@
 import axios from 'axios';
 import * as SecureStore from 'expo-secure-store';
 
-// Apne computer ka local IP address dalein (Mobile device se 127.0.0.1 connect nahi hota)
-const BASE_URL = 'http://192.168.1.100:8000'; 
+const BASE_URL = 'http://10.57.124.179:8000'; 
 
 const api = axios.create({
   baseURL: BASE_URL,
@@ -21,3 +20,15 @@ api.interceptors.request.use(async (config) => {
 });
 
 export default api;
+
+export function getErrorMessage(error) {
+  const data = error.response?.data;
+  const status = error.response?.status;
+  if (status === 429) return 'Too many requests. Please wait a minute.';
+  if (status === 409) return 'This email is already registered.';
+  if (typeof data?.detail === 'string') return data.detail;
+  if (Array.isArray(data?.detail)) return data.detail[0]?.msg ?? 'Invalid input';
+  if (error.code === 'ECONNABORTED') return 'The request timed out. Please try again.';
+  if (!error.response) return 'Cannot reach the server. Check your connection.';
+  return 'Something went wrong. Please try again.';
+}

@@ -1,9 +1,10 @@
 import React, { useState, useContext } from 'react';
-import { View, Text, TextInput, TouchableOpacity, StyleSheet, Alert, ActivityIndicator } from 'react-native';
+import { View, Text, TextInput, TouchableOpacity, StyleSheet, Alert, ActivityIndicator, KeyboardAvoidingView, ScrollView, Platform } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Feather } from '@expo/vector-icons';
-import api from '../api/client';
+import api, {getErrorMessage} from '../api/client';
 import { AuthContext } from '../context/AuthContext';
+
 
 export default function SignUpScreen({ navigation }) {
   const [name, setName] = useState('');
@@ -33,22 +34,13 @@ export default function SignUpScreen({ navigation }) {
 
     try {
       setLoading(true);
-      // const response = await api.post('/auth/signup', { name, email, password });
-      // await login(response.data.access_token, response.data.user);
-
-      // Temporary testing mock:
-      await login('dummy_mock_token_123', { id: 1, name, email });
+      const response = await api.post('/auth/signup', {
+        name: name.trim(), email: email.trim(), password,
+      });
+      await login(response.data.access_token, response.data.user);
       navigation.replace('Home');
     } catch (error) {
-      let msg = 'Failed to create account.';
-      if (error.response?.status === 409) {
-        msg = 'This email is already registered.';
-      } else if (error.response?.data?.detail) {
-        msg = typeof error.response.data.detail === 'string'
-          ? error.response.data.detail
-          : error.response.data.detail[0]?.msg;
-      }
-      Alert.alert('Registration Failed', msg);
+      Alert.alert('Registration Failed', getErrorMessage(error));
     } finally {
       setLoading(false);
     }
@@ -58,6 +50,8 @@ export default function SignUpScreen({ navigation }) {
 
   return (
     <SafeAreaView style={styles.container} edges={['top', 'bottom', 'left', 'right']}>
+    <KeyboardAvoidingView style={{ flex: 1 }} behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
+    <ScrollView keyboardShouldPersistTaps="handled" showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingBottom: 24 }}>
       {/* Top Header Bar */}
       <View style={styles.headerBar}>
         <TouchableOpacity 
@@ -122,6 +116,7 @@ export default function SignUpScreen({ navigation }) {
             value={password}
             onChangeText={setPassword}
             secureTextEntry
+            maxLength={72}
           />
           <Text style={styles.ruleText}>At least 8 characters</Text>
         </View>
@@ -146,6 +141,8 @@ export default function SignUpScreen({ navigation }) {
           </TouchableOpacity>
         </View>
       </View>
+      </ScrollView>
+      </KeyboardAvoidingView>
     </SafeAreaView>
   );
 }

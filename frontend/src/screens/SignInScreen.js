@@ -2,8 +2,9 @@ import React, { useState, useContext } from 'react';
 import { View, Text, TextInput, TouchableOpacity, StyleSheet, Alert, ActivityIndicator } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Feather, MaterialCommunityIcons } from '@expo/vector-icons';
-import api from '../api/client';
+import api, {getErrorMessage} from '../api/client';
 import { AuthContext } from '../context/AuthContext';
+
 
 export default function SignInScreen({ navigation }) {
   const [email, setEmail] = useState('');
@@ -27,15 +28,11 @@ export default function SignInScreen({ navigation }) {
 
     try {
       setLoading(true);
-      // const response = await api.post('/auth/login', { email, password });
-      // await login(response.data.access_token, response.data.user);
-      
-      // Temporary testing mock:
-      await login('dummy_mock_token_123', { id: 1, name: 'Test User', email });
+      const response = await api.post('/auth/login', { email: email.trim(), password });
+      await login(response.data.access_token, response.data.user);
       navigation.replace('Home');
     } catch (error) {
-      const msg = error.response?.data?.detail || 'Incorrect email or password';
-      Alert.alert('Sign In Failed', msg);
+      Alert.alert('Sign In Failed', getErrorMessage(error));
     } finally {
       setLoading(false);
     }

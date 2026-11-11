@@ -1,6 +1,7 @@
 import React, { useContext } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, SafeAreaView } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import { AuthContext } from '../context/AuthContext';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 export default function HomeScreen({ route, navigation }) {
   const { user, logout } = useContext(AuthContext);
@@ -12,7 +13,7 @@ export default function HomeScreen({ route, navigation }) {
   };
 
   return (
-    <SafeAreaView style={styles.container}>
+    <SafeAreaView style={styles.container} edges={['top', 'bottom', 'left', 'right']}>
       <Text style={styles.welcomeText}>
         {isGuest ? 'Welcome, Guest' : `Welcome, ${user?.name}`}
       </Text>
