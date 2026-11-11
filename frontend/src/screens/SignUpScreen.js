@@ -33,11 +33,8 @@ export default function SignUpScreen({ navigation }) {
 
     try {
       setLoading(true);
-      // const response = await api.post('/auth/signup', { name, email, password });
-      // await login(response.data.access_token, response.data.user);
-
-      // Temporary testing mock:
-      await login('dummy_mock_token_123', { id: 1, name, email });
+      const response = await api.post('/auth/signup', { name: name.trim(), email: email.trim().toLowerCase(), password });
+      await login(response.data.access_token, response.data.user);
       navigation.replace('Home');
     } catch (error) {
       let msg = 'Failed to create account.';
