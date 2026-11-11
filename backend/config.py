@@ -20,7 +20,7 @@ COLLECTION_NAME_1 = "qanoon_labour"
 COLLECTION_NAME_2 = "qanoon_labour_clr"
 EMBED_MODEL = "BAAI/bge-small-en-v1.5"
 RERANK_MODEL = "cross-encoder/ms-marco-MiniLM-L-6-v2"
-GROQ_MODEL = "fake"
+GROQ_MODEL = "openai/gpt-oss-120b"
 #"openai/gpt-oss-120b"
 TOP_K_RETRIEVE = 12
 TOP_K_FINAL = 5

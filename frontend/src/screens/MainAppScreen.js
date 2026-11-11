@@ -1,10 +1,10 @@
-import React, { useCallback, useContext, useState } from 'react';
+import React, { useCallback, useContext, useEffect, useRef, useState } from 'react';
 import {
-  ActivityIndicator, Alert, KeyboardAvoidingView, Platform, ScrollView,
+  ActivityIndicator, Alert, Keyboard, KeyboardAvoidingView, Platform, ScrollView,
   StyleSheet, Text, TextInput, TouchableOpacity, View,
 } from 'react-native';
 import { Feather, MaterialCommunityIcons } from '@expo/vector-icons';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
 import * as DocumentPicker from 'expo-document-picker';
 import api from '../api/client';
 import { AuthContext } from '../context/AuthContext';
@@ -77,9 +77,25 @@ function AnswerText({ content, citations, onCitation }) {
 
 function ChatTab({ messages, busy, onAsk, onBackHome, contractName, onCitation }) {
   const [draft, setDraft] = useState('');
-  return <KeyboardAvoidingView style={{ flex: 1 }} behavior={Platform.OS === 'ios' ? 'padding' : undefined} keyboardVerticalOffset={8}>
+  const [keyboardHeight, setKeyboardHeight] = useState(0);
+  const insets = useSafeAreaInsets();
+  const scrollRef = useRef(null);
+
+  useEffect(() => {
+    const show = Keyboard.addListener('keyboardDidShow', e => {
+      setKeyboardHeight(e.endCoordinates.height);
+      setTimeout(() => scrollRef.current?.scrollToEnd({ animated: true }), 50);
+    });
+    const hide = Keyboard.addListener('keyboardDidHide', () => setKeyboardHeight(0));
+    return () => { show.remove(); hide.remove(); };
+  }, []);
+
+  return <KeyboardAvoidingView
+    style={{ flex: 1, paddingBottom: Platform.OS === 'android' ? keyboardHeight : 0 }}
+    behavior={Platform.OS === 'ios' ? 'padding' : undefined}
+  >
     <View style={s.chatHeader}><TouchableOpacity onPress={onBackHome} style={s.backCircle}><Feather name="chevron-left" size={22} color={C.dark} /></TouchableOpacity><View><Text style={s.chatTitle}>Labour-law answer</Text><View style={s.chatSubRow}><View style={s.onlineDot} /><Text style={s.chatSub}>Sources checked</Text></View></View></View>
-    <ScrollView style={s.chatScroll} contentContainerStyle={{ padding: 16, paddingBottom: 20 }} keyboardShouldPersistTaps="handled">
+    <ScrollView ref={scrollRef} style={s.chatScroll} contentContainerStyle={{ padding: 16, paddingBottom: 20 }} keyboardShouldPersistTaps="handled">
       <Text style={s.dateLabel}>Today</Text>
       {contractName ? <View style={s.attachment}><Feather name="file-text" size={19} color={C.green} /><View style={{ flex: 1 }}><Text style={s.attachmentOverline}>ATTACHED CONTRACT</Text><Text style={s.attachmentName} numberOfLines={1}>{contractName}</Text></View></View> : null}
       {messages.map((message, index) => message.role === 'user' ? <View key={`${index}-u`} style={s.userBubble}><Text style={s.userBubbleText}>{message.content}</Text></View> : <View key={`${index}-a`} style={s.answerCard}>
