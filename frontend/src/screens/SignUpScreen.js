@@ -34,9 +34,7 @@ export default function SignUpScreen({ navigation }) {
 
     try {
       setLoading(true);
-      const response = await api.post('/auth/signup', {
-        name: name.trim(), email: email.trim(), password,
-      });
+      const response = await api.post('/auth/signup', { name: name.trim(), email: email.trim().toLowerCase(), password });
       await login(response.data.access_token, response.data.user);
       navigation.replace('Home');
     } catch (error) {

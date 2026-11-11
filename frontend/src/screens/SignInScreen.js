@@ -28,7 +28,7 @@ export default function SignInScreen({ navigation }) {
 
     try {
       setLoading(true);
-      const response = await api.post('/auth/login', { email: email.trim(), password });
+      const response = await api.post('/auth/login', { email: email.trim().toLowerCase(), password });
       await login(response.data.access_token, response.data.user);
       navigation.replace('Home');
     } catch (error) {
@@ -129,7 +129,7 @@ export default function SignInScreen({ navigation }) {
         </View>
 
         <View style={styles.footerLinkRow}>
-          <Text style={styles.footerLinkMuted}>Don't have an account? </Text>
+          <Text style={styles.footerLinkMuted}>Don&apos;t have an account? </Text>
           <TouchableOpacity onPress={() => navigation.navigate('SignUp')}>
             <Text style={styles.footerLinkBold}>Create one</Text>
           </TouchableOpacity>
